@@ -1,0 +1,55 @@
+#include <iostream>
+#include <iomanip>
+
+class CreditCard {
+public:
+    int Number;    // номер карты (4 цифры)
+    float Balance; // баланс в рублях
+
+    // Конструктор: номер и начальный баланс
+    CreditCard(int number, float balance) : Number(number), Balance(balance) {
+        // (опционально: можно проверить, что number в диапазоне 1000–9999)
+    }
+
+    // Положить деньги
+    void Put(float amount) {
+        if (amount > 0) {
+            Balance += amount;
+        }
+    }
+
+    // Снять деньги (если достаточно средств)
+    void Take(float amount) {
+        if (amount > 0 && amount <= Balance) {
+            Balance -= amount;
+        }
+        // Если недостаточно — ничего не делаем (можно добавить вывод ошибки)
+    }
+};
+
+// --- Основная программа ---
+int main() {
+    setlocale (0, "Russian");
+    // Создаём объект
+    CreditCard firstCC(1234, 50.0f);
+
+    // Выводим начальное состояние
+    std::cout << "Карта #" << firstCC.Number
+              << ", баланс: " << std::fixed << std::setprecision(2)
+              << firstCC.Balance << " Р\n";
+
+    // Работаем с указателем на объект
+    CreditCard* ptr = &firstCC;
+
+    // Демонстрация обращения к методу через ->
+    ptr->Put(100.5f);      // кладём 100.50 Р
+    std::cout << "После Put(100.5): " << ptr->Balance << " Р\n";
+
+    ptr->Take(30.0f);      // снимаем 30 Р
+    std::cout << "После Take(30): " << ptr->Balance << " Р\n";
+
+    ptr->Take(200.0f);     // попытка снять больше, чем есть — игнорируется
+    std::cout << "После неудачного Take(200): " << ptr->Balance << " Р\n";
+
+    return 0;
+}
